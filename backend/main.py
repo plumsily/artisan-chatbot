@@ -65,15 +65,15 @@ async def create_message(message: MessageCreate):
     }
     
 @app.delete('/messages/{message_id}')
-async def delete_message(message_id: str):
+async def delete_message(message_id: UUID):
     for index, message in enumerate(messages):
-        if message.id == message_id and message.sender == 'user':
+        if message.id == message_id:
             messages.pop(index)
             return {"detail": "Message deleted."}
         
 @app.put('/messages/{message_id}')
 async def update_message(message_id: UUID, message_update: MessageUpdate):
-    for message in enumerate(messages):
+    for index, message in enumerate(messages):
         if message.id == message_id:
             message.content = message_update.content
             return message

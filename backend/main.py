@@ -24,9 +24,11 @@ class Message(BaseModel):
     timestamp: datetime
 class MessageCreate(BaseModel):
     content: str
+class MessageUpdate(BaseModel):
+    content: str
 
 # In-memory storage for messages to test endpoint functionality first
-messages = []
+messages:list[Message] = []
 
 # Agent response handler - a simple echo of user message
 def get_agent_response(user_message: str) -> str :
@@ -68,3 +70,10 @@ async def delete_message(message_id: str):
         if message.id == message_id and message.sender == 'user':
             messages.pop(index)
             return {"detail": "Message deleted."}
+        
+@app.put('/messages/{message_id}')
+async def update_message(message_id: UUID, message_update: MessageUpdate):
+    for message in enumerate(messages):
+        if message.id == message_id:
+            message.content = message_update.content
+            return message

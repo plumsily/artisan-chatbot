@@ -39,6 +39,17 @@ const ChatWindow = () => {
     setMessages((prev) => prev.filter((message) => message.id !== message_id));
   };
 
+  const handleUpdateMessage = async (message_id: string, content: string) => {
+    const res = await axios.put(`${API_URL}/messages/${message_id}`, {
+      content,
+    });
+    const data = res.data as Message;
+
+    setMessages((prev) =>
+      prev.map((message) => (message.id === message_id ? data : message))
+    );
+  };
+
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -103,6 +114,7 @@ const ChatWindow = () => {
               key={message.id}
               message={message}
               handleDeleteMessage={handleDeleteMessage}
+              handleUpdateMessage={handleUpdateMessage}
             />
           ))}
         </ul>

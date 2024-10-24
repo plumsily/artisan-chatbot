@@ -63,4 +63,4 @@ To get the frontend (Next.js) up and running, follow these steps:
 
 ## Additional Information
 
-- The FastAPI backend should be running on a different port (e.g., `http://localhost:8000`).
+- The FastAPI backend should be running on a different port (`http://localhost:8000`).

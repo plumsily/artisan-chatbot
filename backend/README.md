@@ -2,19 +2,25 @@
 
 To get the backend server up and running, follow these steps:
 
-1. **Activate the virtual environment:**
+1. **Create a virtual environment** (if not already created):
+
+    ```bash
+    python -m venv .venv
+    ```
+
+2. **Activate the virtual environment:**
 
     ```bash
     source .venv/bin/activate
     ```
 
-2. **Install the required dependencies:**
+3. **Install the required dependencies:**
 
     ```bash
     pip install -r requirements.txt
     ```
 
-3. **Run the development server:**
+4. **Run the development server:**
 
     ```bash
     fastapi dev main.py

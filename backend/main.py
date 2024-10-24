@@ -25,9 +25,6 @@ def get_session():
         
 SessionDep = Annotated[Session, Depends(get_session)]
 
-# In-memory storage for messages to test endpoint functionality first
-# messages:list[Message] = []
-
 # Agent response handler - a simple echo of user message
 def get_agent_response(user_message: str) -> str :
     return f"Hi there, you said: '{user_message}'"

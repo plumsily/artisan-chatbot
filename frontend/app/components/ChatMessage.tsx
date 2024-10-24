@@ -1,14 +1,9 @@
 "use client";
 
 import { Message } from "../types";
-import {
-  PiTrash,
-  PiPencilSimple,
-  PiX,
-  PiPaperPlaneRight,
-} from "react-icons/pi";
+import { PiTrash, PiPencilSimple, PiX } from "react-icons/pi";
 import { useState } from "react";
-import Button from "./Button";
+import ChatInput from "./ChatInput";
 
 interface MessageProps {
   message: Message;
@@ -21,7 +16,6 @@ const ChatMessage = ({
   handleDeleteMessage,
   handleUpdateMessage,
 }: MessageProps) => {
-  const [editingMessage, setEditingMessage] = useState<string>(message.content);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const onUpdateMessage = (id: number, content: string) => {
@@ -71,30 +65,10 @@ const ChatMessage = ({
         {isEditing ? (
           <div className="flex flex-col gap-1 w-full">
             <span className="text-xs">Edit message:</span>
-            <div className="flex gap-1 items-center -mx-2">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  onUpdateMessage(message.id, editingMessage);
-                }}
-                className="flex-1 flex"
-              >
-                <input
-                  type="text"
-                  className="flex-1 p-2 focus:outline-none focus:ring-[0.5px] rounded-full ring-gray-700 text-sm"
-                  value={editingMessage}
-                  onChange={(e) => setEditingMessage(e.target.value)}
-                />
-              </form>
-              <Button
-                handleClick={() => {
-                  onUpdateMessage(message.id, editingMessage);
-                }}
-                size={28}
-              >
-                <PiPaperPlaneRight size={16} />
-              </Button>
-            </div>
+            <ChatInput
+              message={message}
+              handleMessageUpdate={onUpdateMessage}
+            />
           </div>
         ) : (
           <p>{message.content}</p>

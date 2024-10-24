@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   PiSparkle,
   PiUser,
-  PiPaperPlaneRight,
   PiMinus,
   PiPlus,
   PiArrowsOutSimple,
@@ -13,10 +12,10 @@ import ChatMessage from "./ChatMessage";
 import Button from "./Button";
 import axios from "axios";
 import { API_URL } from "../page";
+import ChatInput from "./ChatInput";
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -49,7 +48,6 @@ const ChatWindow = () => {
       const res = await axios.post(`${API_URL}/messages/`, newMessage);
       console.log("Response data:", res.data);
       setMessages((prev) => [...prev, ...res.data]);
-      setMessage("");
     } catch (error) {
       console.error("Error submitting message ", error);
     }
@@ -167,29 +165,13 @@ const ChatWindow = () => {
               ))}
             </ul>
           )}
+
           {/* User input textfield section */}
-          <div className="flex items-center py-4 border-t border-gray-100 mt-2 mx-4">
+          <div className="flex items-center py-4 border-t border-gray-100 mt-2 mx-4 gap-2">
             <div className="w-7 h-7 flex items-center justify-center bg-lime-300 rounded-full">
               <PiUser size={16} />
             </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleMessageSubmit(message);
-              }}
-              className="flex-1 flex"
-            >
-              <input
-                type="text"
-                placeholder="Your question"
-                className="flex-1 p-2 focus:outline-none text-sm"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-            </form>
-            <Button handleClick={() => handleMessageSubmit(message)} size={28}>
-              <PiPaperPlaneRight size={16} />
-            </Button>
+            <ChatInput handleMessageSubmit={handleMessageSubmit} />
           </div>
         </>
       )}

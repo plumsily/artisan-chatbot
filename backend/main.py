@@ -1,9 +1,9 @@
-from typing import List
-from fastapi import FastAPI, HTTPException
+from typing import List, Annotated
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from datetime import datetime
-from uuid import UUID, uuid4
+from models import Message, MessageBase
+from database import engine
+from sqlmodel import SQLModel, Session, select
 
 app = FastAPI()
 
@@ -16,19 +16,17 @@ app.add_middleware(
     allow_headers=["*"], 
 )
 
-# Model for messages
-class Message(BaseModel):
-    id: UUID
-    sender: str  # 'user' or 'agent'
-    content: str
-    timestamp: datetime
-class MessageCreate(BaseModel):
-    content: str
-class MessageUpdate(BaseModel):
-    content: str
+# SQLite Database
+SQLModel.metadata.create_all(engine)
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+        
+SessionDep = Annotated[Session, Depends(get_session)]
 
 # In-memory storage for messages to test endpoint functionality first
-messages:list[Message] = []
+# messages:list[Message] = []
 
 # Agent response handler - a simple echo of user message
 def get_agent_response(user_message: str) -> str :
@@ -37,45 +35,51 @@ def get_agent_response(user_message: str) -> str :
 # API Endpoints
 
 @app.get('/messages/', response_model=List[Message])
-async def read_messages():
+async def read_messages(session: SessionDep):
+    messages = session.exec(select(Message).order_by(Message.timestamp)).all()
     return messages
 
-@app.post('/messages/', response_model=dict)
-async def create_message(message: MessageCreate):
-
+@app.post('/messages/', response_model=List[Message])
+async def create_message(message: MessageBase, session: SessionDep):
+    
     user_message = Message(
-        id=uuid4(),
         content=message.content,
         sender='user',
-        timestamp=datetime.now()
     )
-    messages.append(user_message)
+    session.add(user_message)
+    session.commit()
     
     agent_message = Message(
-        id=uuid4(),
         content=get_agent_response(message.content),
         sender='agent',
-        timestamp=datetime.now()
     )
-    messages.append(agent_message)
-
-    return {
-        "user_message": user_message,
-        "agent_message": agent_message
-    }
+    session.add(agent_message)
+    session.commit()
+    
+    session.refresh(agent_message)
+    session.refresh(user_message)
+    
+    return [ user_message, agent_message ]
     
 @app.delete('/messages/{message_id}')
-async def delete_message(message_id: UUID):
-    for index, message in enumerate(messages):
-        if message.id == message_id:
-            messages.pop(index)
-            return {"detail": "Message deleted."}
-    raise HTTPException(status_code=404, detail="Message not found")
+async def delete_message(message_id: int, session: SessionDep):
+    message = session.get(Message, message_id)
+    if not message or message.sender != 'user':
+        raise HTTPException(status_code=404, detail="Message not found or cannot be deleted.")
+    
+    session.delete(message)
+    session.commit()
+    return {"detail": "Message deleted."}
         
 @app.put('/messages/{message_id}')
-async def update_message(message_id: UUID, message_update: MessageUpdate):
-    for index, message in enumerate(messages):
-        if message.id == message_id:
-            message.content = message_update.content
-            return message
-    raise HTTPException(status_code=404, detail="Message not found")
+async def update_message(message_id: int, message_update: MessageBase, session: SessionDep):
+    
+    message = session.get(Message, message_id)
+    if not message or message.sender != 'user':
+        raise HTTPException(status_code=404, detail="Message not found or cannot be deleted.")
+    
+    message.content = message_update.content
+    session.add(message)
+    session.commit()
+    session.refresh(message)
+    return message

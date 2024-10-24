@@ -12,8 +12,8 @@ import Button from "./Button";
 
 interface MessageProps {
   message: Message;
-  handleDeleteMessage: (id: string) => void;
-  handleUpdateMessage: (id: string, content: string) => void;
+  handleDeleteMessage: (id: number) => void;
+  handleUpdateMessage: (id: number, content: string) => void;
 }
 
 const ChatMessage = ({
@@ -24,7 +24,7 @@ const ChatMessage = ({
   const [editingMessage, setEditingMessage] = useState<string>(message.content);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const onUpdateMessage = (id: string, content: string) => {
+  const onUpdateMessage = (id: number, content: string) => {
     handleUpdateMessage(id, content);
     setIsEditing(false);
   };
@@ -32,12 +32,12 @@ const ChatMessage = ({
   return (
     <li
       className={`flex items-center gap-1 w-full group ${
-        message.sender === "user" && "justify-end"
+        message.sender == "user" && "justify-end"
       }`}
       key={message.id}
     >
       {/* Action button section - includes delete and edit buttons */}
-      {message.sender === "user" && (
+      {message.sender == "user" && (
         <div className="flex gap-1 items-center">
           <button
             onClick={() => handleDeleteMessage(message.id)}
@@ -59,7 +59,7 @@ const ChatMessage = ({
       {/* Chat bubble */}
       <div
         className={`flex flex-col py-2 px-4 transition-all ${
-          message.sender === "user"
+          message.sender == "user"
             ? `items-end ${
                 isEditing
                   ? "bg-white border border-gray-500 text-black w-full"

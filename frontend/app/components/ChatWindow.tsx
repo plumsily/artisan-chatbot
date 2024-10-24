@@ -14,11 +14,6 @@ import Button from "./Button";
 import axios from "axios";
 import { API_URL } from "../page";
 
-interface MessageCreate {
-  user_message: Message;
-  agent_message: Message;
-}
-
 const ChatWindow = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
@@ -29,50 +24,62 @@ const ChatWindow = () => {
 
   // Fetch all messages on load
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get<Message[]>(`${API_URL}/messages/`);
-        setMessages(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching messages: ", error);
-        setIsLoading(false);
-      }
-    };
-
     fetchMessages();
   }, []);
 
   // API Handlers
+  const fetchMessages = async () => {
+    try {
+      const res = await axios.get<Message[]>(`${API_URL}/messages/`);
+      setMessages(res.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching messages: ", error);
+      setIsLoading(false);
+    }
+  };
+
   const handleMessageSubmit = async (message: string) => {
-    if (message.trim() === "") return;
+    try {
+      if (message.trim() === "") return;
 
-    const newMessage = {
-      content: message,
-    };
-
-    const res = await axios.post(`${API_URL}/messages/`, newMessage);
-    const data = (await res.data) as MessageCreate;
-
-    setMessages((prev) => [...prev, data.user_message, data.agent_message]);
-    setMessage("");
+      const newMessage = {
+        content: message,
+      };
+      const res = await axios.post(`${API_URL}/messages/`, newMessage);
+      console.log("Response data:", res.data);
+      setMessages((prev) => [...prev, ...res.data]);
+      setMessage("");
+    } catch (error) {
+      console.error("Error submitting message ", error);
+    }
   };
 
-  const handleDeleteMessage = async (message_id: string) => {
-    await axios.delete(`${API_URL}/messages/${message_id}`);
+  const handleDeleteMessage = async (message_id: number) => {
+    try {
+      await axios.delete(`${API_URL}/messages/${message_id}`);
 
-    setMessages((prev) => prev.filter((message) => message.id !== message_id));
+      setMessages((prev) =>
+        prev.filter((message) => message.id !== message_id)
+      );
+    } catch (error) {
+      console.error("Error deleting message ", error);
+    }
   };
 
-  const handleUpdateMessage = async (message_id: string, content: string) => {
-    const res = await axios.put(`${API_URL}/messages/${message_id}`, {
-      content,
-    });
-    const data = res.data as Message;
+  const handleUpdateMessage = async (message_id: number, content: string) => {
+    try {
+      const res = await axios.put(`${API_URL}/messages/${message_id}`, {
+        content,
+      });
+      const data = res.data as Message;
 
-    setMessages((prev) =>
-      prev.map((message) => (message.id === message_id ? data : message))
-    );
+      setMessages((prev) =>
+        prev.map((message) => (message.id === message_id ? data : message))
+      );
+    } catch (error) {
+      console.error("Error updating message ", error);
+    }
   };
 
   // Visibility state handlers

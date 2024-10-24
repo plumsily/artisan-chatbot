@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
@@ -70,6 +70,7 @@ async def delete_message(message_id: UUID):
         if message.id == message_id:
             messages.pop(index)
             return {"detail": "Message deleted."}
+    raise HTTPException(status_code=404, detail="Message not found")
         
 @app.put('/messages/{message_id}')
 async def update_message(message_id: UUID, message_update: MessageUpdate):
@@ -77,3 +78,4 @@ async def update_message(message_id: UUID, message_update: MessageUpdate):
         if message.id == message_id:
             message.content = message_update.content
             return message
+    raise HTTPException(status_code=404, detail="Message not found")

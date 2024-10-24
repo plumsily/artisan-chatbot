@@ -24,6 +24,11 @@ const ChatMessage = ({
   const [editingMessage, setEditingMessage] = useState<string>(message.content);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
+  const onUpdateMessage = (id: string, content: string) => {
+    handleUpdateMessage(id, content);
+    setIsEditing(false);
+  };
+
   return (
     <li
       className={`flex items-center gap-1 w-full group ${
@@ -31,6 +36,7 @@ const ChatMessage = ({
       }`}
       key={message.id}
     >
+      {/* Action button section - includes delete and edit buttons */}
       {message.sender === "user" && (
         <div className="flex gap-1 items-center">
           <button
@@ -49,6 +55,8 @@ const ChatMessage = ({
           </button>
         </div>
       )}
+
+      {/* Chat bubble */}
       <div
         className={`flex flex-col py-2 px-4 transition-all ${
           message.sender === "user"
@@ -67,8 +75,7 @@ const ChatMessage = ({
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  handleUpdateMessage(message.id, editingMessage);
-                  setIsEditing(false);
+                  onUpdateMessage(message.id, editingMessage);
                 }}
                 className="flex-1 flex"
               >
@@ -81,8 +88,7 @@ const ChatMessage = ({
               </form>
               <Button
                 handleClick={() => {
-                  handleUpdateMessage(message.id, editingMessage);
-                  setIsEditing(false);
+                  onUpdateMessage(message.id, editingMessage);
                 }}
                 size={28}
               >

@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+"use client";
+import { useEffect, useRef, useState } from "react";
 import { PiSparkle, PiUser, PiPaperPlaneRight } from "react-icons/pi";
 import { Message } from "../types";
 import ChatMessage from "./ChatMessage";
@@ -6,21 +7,18 @@ import Button from "./Button";
 import axios from "axios";
 import { API_URL } from "../page";
 
-interface ChatWindowProps {
-  messages: Message[];
-  setMessages: Dispatch<SetStateAction<Message[]>>;
-  isLoading: boolean;
-}
-
 interface MessageCreate {
   user_message: Message;
   agent_message: Message;
 }
 
-const ChatWindow = ({ messages, setMessages, isLoading }: ChatWindowProps) => {
+const ChatWindow = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const messagesEndRef = useRef<HTMLUListElement>(null); // Create a ref for the message list to auto scroll
 
+  // API Handlers
   const handleMessageSubmit = async (message: string) => {
     if (message.trim() === "") return;
 
@@ -34,6 +32,27 @@ const ChatWindow = ({ messages, setMessages, isLoading }: ChatWindowProps) => {
     setMessages((prev) => [...prev, data.user_message, data.agent_message]);
     setMessage("");
   };
+
+  const handleDeleteMessage = async (message_id: string) => {
+    await axios.delete(`${API_URL}/messages/${message_id}`);
+
+    setMessages((prev) => prev.filter((message) => message.id !== message_id));
+  };
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get<Message[]>(`${API_URL}/messages/`);
+        setMessages(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching messages: ", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, []);
 
   // Scroll to the bottom when messages array changes
   useEffect(() => {
@@ -80,7 +99,11 @@ const ChatWindow = ({ messages, setMessages, isLoading }: ChatWindowProps) => {
           ref={messagesEndRef}
         >
           {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
+            <ChatMessage
+              key={message.id}
+              message={message}
+              handleDeleteMessage={handleDeleteMessage}
+            />
           ))}
         </ul>
       )}

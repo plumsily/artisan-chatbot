@@ -39,7 +39,7 @@ async def read_messages():
     return messages
 
 @app.post('/messages/', response_model=dict)
-def create_message(message: MessageCreate):
+async def create_message(message: MessageCreate):
 
     user_message = Message(
         id=uuid4(),
@@ -61,3 +61,10 @@ def create_message(message: MessageCreate):
         "user_message": user_message,
         "agent_message": agent_message
     }
+    
+@app.delete('/messages/{message_id}')
+async def delete_message(message_id: str):
+    for index, message in enumerate(messages):
+        if message.id == message_id and message.sender == 'user':
+            messages.pop(index)
+            return {"detail": "Message deleted."}

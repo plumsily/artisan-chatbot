@@ -12,6 +12,11 @@ interface ChatWindowProps {
   isLoading: boolean;
 }
 
+interface MessageCreate {
+  user_message: Message;
+  agent_message: Message;
+}
+
 const ChatWindow = ({ messages, setMessages, isLoading }: ChatWindowProps) => {
   const [message, setMessage] = useState<string>("");
   const messagesEndRef = useRef<HTMLUListElement>(null); // Create a ref for the message list to auto scroll
@@ -24,9 +29,9 @@ const ChatWindow = ({ messages, setMessages, isLoading }: ChatWindowProps) => {
     };
 
     const res = await axios.post(`${API_URL}/messages/`, newMessage);
-    const data = await res.data;
+    const data = (await res.data) as MessageCreate;
 
-    setMessages((prev) => [...prev, data]);
+    setMessages((prev) => [...prev, data.user_message, data.agent_message]);
     setMessage("");
   };
 
@@ -71,7 +76,7 @@ const ChatWindow = ({ messages, setMessages, isLoading }: ChatWindowProps) => {
         </div>
       ) : (
         <ul
-          className="flex flex-1 flex-col gap-2 overflow-y-scroll text-sm custom-scrollbar pr-2 pl-4"
+          className="flex flex-1 flex-col gap-4 overflow-y-scroll text-sm custom-scrollbar pr-2 pl-4"
           ref={messagesEndRef}
         >
           {messages.map((message) => (

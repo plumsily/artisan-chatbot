@@ -28,11 +28,17 @@ class MessageCreate(BaseModel):
 # In-memory storage for messages to test endpoint functionality first
 messages = []
 
-@app.get('/messages/', response_model=list[Message])
+# Agent response handler - a simple echo of user message
+def get_agent_response(user_message: str) -> str :
+    return f"Hi there, you said: '{user_message}'"
+
+# API Endpoints
+
+@app.get('/messages/', response_model=List[Message])
 async def read_messages():
     return messages
 
-@app.post('/messages/', response_model=Message)
+@app.post('/messages/', response_model=dict)
 def create_message(message: MessageCreate):
 
     user_message = Message(
@@ -42,5 +48,16 @@ def create_message(message: MessageCreate):
         timestamp=datetime.now()
     )
     messages.append(user_message)
+    
+    agent_message = Message(
+        id=uuid4(),
+        content=get_agent_response(message.content),
+        sender='agent',
+        timestamp=datetime.now()
+    )
+    messages.append(agent_message)
 
-    return user_message
+    return {
+        "user_message": user_message,
+        "agent_message": agent_message
+    }

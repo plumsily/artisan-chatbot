@@ -14,8 +14,9 @@ const ChatMessage = ({ message }: MessageProps) => {
     >
       <div
         className={`flex flex-col py-2 px-4 ${
-          message.sender === "user" &&
-          "items-end bg-purple-500 text-white rounded-l-3xl rounded-br-3xl"
+          message.sender === "user"
+            ? "items-end bg-purple-500 text-white rounded-l-3xl rounded-br-3xl"
+            : "bg-gray-100 rounded-r-3xl rounded-bl-3xl w-fit"
         }`}
       >
         <p>{message.content}</p>

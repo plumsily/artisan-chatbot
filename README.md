@@ -17,19 +17,25 @@ To get the backend (FastAPI) up and running, follow these steps:
     cd backend
     ```
 
-2. **Activate the virtual environment:**
+2. **Create a virtual environment** (if not already created):
+
+    ```bash
+    python -m venv .venv
+    ```
+
+3. **Activate the virtual environment:**
 
     ```bash
     source .venv/bin/activate
     ```
 
-3. **Install the required dependencies:**
+4. **Install the required dependencies:**
 
     ```bash
     pip install -r requirements.txt
     ```
 
-4. **Run the development server:**
+5. **Run the development server:**
 
     ```bash
     fastapi dev main.py

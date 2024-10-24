@@ -3,13 +3,16 @@ import { PiSparkle, PiUser, PiPaperPlaneRight } from "react-icons/pi";
 import { Message } from "../types";
 import ChatMessage from "./ChatMessage";
 import Button from "./Button";
+import axios from "axios";
+import { API_URL } from "../page";
 
 interface ChatWindowProps {
   messages: Message[];
   setMessages: Dispatch<SetStateAction<Message[]>>;
+  isLoading: boolean;
 }
 
-const ChatWindow = ({ messages, setMessages }: ChatWindowProps) => {
+const ChatWindow = ({ messages, setMessages, isLoading }: ChatWindowProps) => {
   const [message, setMessage] = useState<string>("");
   const messagesEndRef = useRef<HTMLUListElement>(null); // Create a ref for the message list to auto scroll
 
@@ -17,13 +20,13 @@ const ChatWindow = ({ messages, setMessages }: ChatWindowProps) => {
     if (message.trim() === "") return;
 
     const newMessage = {
-      id: message + Date.now(),
-      sender: "user",
       content: message,
-      timestamp: Date.now(),
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    const res = await axios.post(`${API_URL}/messages/`, newMessage);
+    const data = await res.data;
+
+    setMessages((prev) => [...prev, data]);
     setMessage("");
   };
 
@@ -48,14 +51,34 @@ const ChatWindow = ({ messages, setMessages }: ChatWindowProps) => {
       </div>
 
       {/* Message list display section */}
-      <ul
-        className="flex flex-1 flex-col gap-2 overflow-y-scroll text-sm custom-scrollbar pr-2 pl-4"
-        ref={messagesEndRef}
-      >
-        {messages.map((message) => (
-          <ChatMessage key={message.id} message={message} />
-        ))}
-      </ul>
+
+      {isLoading ? (
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex space-x-2">
+            <div
+              className="w-3 h-3 bg-purple-500 rounded-full animate-bounce"
+              style={{ animationDelay: "0s" }}
+            ></div>
+            <div
+              className="w-3 h-3 bg-purple-500 rounded-full animate-bounce"
+              style={{ animationDelay: "0.2s" }}
+            ></div>
+            <div
+              className="w-3 h-3 bg-purple-500 rounded-full animate-bounce"
+              style={{ animationDelay: "0.4s" }}
+            ></div>
+          </div>
+        </div>
+      ) : (
+        <ul
+          className="flex flex-1 flex-col gap-2 overflow-y-scroll text-sm custom-scrollbar pr-2 pl-4"
+          ref={messagesEndRef}
+        >
+          {messages.map((message) => (
+            <ChatMessage key={message.id} message={message} />
+          ))}
+        </ul>
+      )}
 
       {/* User input textfield section */}
       <div className="flex items-center py-4 border-t border-gray-100 mt-2 mx-4">

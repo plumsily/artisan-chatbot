@@ -1,12 +1,31 @@
 "use client";
 
 import { PiArrowRight } from "react-icons/pi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Message } from "./types";
 import ChatWindow from "./components/ChatWindow";
+import axios from "axios";
+
+export const API_URL = "http://localhost:8000"; // backend url
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get<Message[]>(`${API_URL}/messages/`);
+        setMessages(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching messages: ", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen font-[family-name:var(--font-geist-sans)]">
@@ -33,7 +52,11 @@ export default function Home() {
         </div>
       </div>
 
-      <ChatWindow messages={messages} setMessages={setMessages} />
+      <ChatWindow
+        messages={messages}
+        setMessages={setMessages}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

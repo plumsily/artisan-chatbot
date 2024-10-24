@@ -26,12 +26,7 @@ class MessageCreate(BaseModel):
     content: str
 
 # In-memory storage for messages to test endpoint functionality first
-messages = [Message(
-        id=uuid4(),
-        content='Test message',
-        sender='agent',
-        timestamp=datetime.now()
-    )]
+messages = []
 
 @app.get('/messages/', response_model=list[Message])
 async def read_messages():

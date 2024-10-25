@@ -1,13 +1,12 @@
 # Artisan Chatbot Project Overview
 
+![App Screenshot](./screenshots/screenshot.png)
+
 This project consists of two main parts:
 
 1. **Backend:** FastAPI (located in the `backend/` directory)
 2. **Frontend:** Next.js (located in the `frontend/` directory)
 
-## Getting Started
-
-Clone this repo:
 ## Getting Started
 
 Clone this repo:

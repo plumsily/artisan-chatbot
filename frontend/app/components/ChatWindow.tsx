@@ -46,7 +46,6 @@ const ChatWindow = () => {
         content: message,
       };
       const res = await axios.post(`${API_URL}/messages/`, newMessage);
-      console.log("Response data:", res.data);
       setMessages((prev) => [...prev, ...res.data]);
     } catch (error) {
       console.error("Error submitting message ", error);

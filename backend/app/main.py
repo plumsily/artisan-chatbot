@@ -1,8 +1,8 @@
 from typing import List, Annotated
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from models import Message, MessageBase
-from database import engine
+from app.models import Message, MessageBase
+from app.database import engine
 from sqlmodel import SQLModel, Session, select
 
 app = FastAPI()

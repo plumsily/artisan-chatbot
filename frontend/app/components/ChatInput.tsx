@@ -19,6 +19,8 @@ const ChatInput = ({
     message ? message.content : ""
   );
 
+  // Check if we are accepting a new user message to input, or accessing the input via the in-line chat bubble.
+  // In-line requires a PUT request where message id is necessary, whereas new submissions are POST.
   const handleSubmit = () => {
     if (message && handleMessageUpdate) {
       handleMessageUpdate(message.id, editingMessage);

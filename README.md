@@ -86,68 +86,58 @@ To get the frontend (Next.js) up and running, follow these steps:
 
 ### Backend Development
 
-1. **Setting Up FastAPI Backend**
+1. **Create Models**
 
-   - Initiated the backend development by setting up a FastAPI project structure.
-   - Created virtual environments for dependency management.
+   - Designed initial models for storing messages and agent responses.
 
-2. **Creating Models and API Routes**
+2. **Set Up API Routes**
 
-   - Defined data models using Pydantic for data validation and serialization.
-   - Developed API routes to handle user messages and agent responses.
+   - Developed API endpoints for creating, retrieving, updating, and deleting messages.
+   - Developed handlers to auto generate agent responses on user submission.
 
-3. **Testing API Endpoints**
+3. **In-Memory Testing**
 
-   - Used `curl` commands to test the API endpoints with a temporary in-memory data store.
-   - Validated the functionality of the endpoints before integrating a database.
+   - Used temporary in-memory storage for early testing of endpoints.
+   - Verified each route using curl commands to test and validate responses.
 
-4. **Integrating Automated Agent Response**
+4. **Add SQLite Database for Persistence**
 
-   - Implemented an automated agent that generates responses to user messages.
-   - Ensured that the agent's responses are correctly returned via the API.
+   - After validating functionality and frontend integration, integrated SQLite as a persistent database.
+   - Updated models and endpoints to support SQLite, ensuring data is retained across sessions.
+
+5. **Pytest and GitHub Actions CI**
+
+   - Create api test using pytest to ensure API endpoints function as expected.
+   - Configured GitHub Actions to run these tests automatically in CI to automate the testing process.
 
 ### Frontend Development
 
-1. **Laying Out Core Components**
+1. **Initial Component Layout**
 
-   - Started by designing the core components needed to interact with the backend API.
-   - Built the user interface for sending messages and displaying responses.
+   - Identified the core components necessary to interact with backend API endpoints.
+   - Created components to display messages and accept user input.
 
-2. **Component Design and Modularization**
+2. **Modularize and Design Components**
 
-   - Refactored the frontend code to modularize components for reusability.
-   - Followed best practices in component design for maintainability.
+   - Broke down components into smaller, reusable parts.
+   - Focused on modular design, separating concerns across components for better maintainability.
 
-3. **Design and Accessibility Enhancements**
+3. **Design and Responsive Enhancements**
 
-   - Improved the UI/UX with non-critical features like chat window expansion.
-   - Enhanced accessibility to ensure the app is usable by all users.
+   - Improved design with user-friendly elements and responsive features.
+   - Added non-critical features, like chat window expansion and button animations, to enhance the user experience without impacting functionality.
 
-### Linking Frontend and Backend
+4. **Linking Backend and Frontend**
 
-- Integrated the frontend with the backend API endpoints.
-- Tested the full communication flow to ensure that user messages are processed and responses are displayed correctly.
+   - Throughout frontend development, API routes were built out or updated to handle message exchanges.
+   - Verified end-to-end functionality by testing agent responses and ensuring real-time message updates.
 
-### Adding Data Persistence with SQLite
-
-- Introduced a SQLite database for persistent data storage.
-- Modified the API endpoints to perform CRUD operations with the database.
-- Migrated from the in-memory solution to SQLite for data durability.
-
-### Testing and Continuous Integration
-
-- Wrote unit tests using `pytest` to verify the backend functionality.
-- Configured GitHub Actions CI to automatically run tests on code pushes.
-- Ensured that all endpoints are working correctly through continuous integration.
-
----
 
 ## Future Considerations
 
 - **Frontend Integration Tests:**
   - Plan to write integration tests for the frontend using Jest.
-  - This will help in catching issues related to component interactions and API integrations.
 
 - **Performance Optimizations:**
   - Explore large list memoization techniques to enhance performance.
-  - Optimize both frontend and backend for scalability.
+

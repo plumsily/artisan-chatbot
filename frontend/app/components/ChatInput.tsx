@@ -40,7 +40,7 @@ const ChatInput = ({
         <input
           placeholder={!message ? "Your question" : ""}
           type="text"
-          className="flex-1 px-2 py-1 focus:outline-none focus:ring-[0.5px] rounded-full ring-gray-700 text-sm"
+          className="flex-1 px-2 py-1 focus:outline-none focus:ring-[1px] rounded-full ring-gray-700 text-sm"
           value={editingMessage}
           onChange={(e) => setEditingMessage(e.target.value)}
         />

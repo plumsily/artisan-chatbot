@@ -120,7 +120,7 @@ const ChatWindow = () => {
       {isOpen && (
         <>
           {/* Header section with Ava details */}
-          <div className="flex flex-col items-center py-2">
+          <div className="flex flex-col items-center pb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-300 rounded-full mb-2">
               <PiSparkle size={32} color="white" />
             </div>

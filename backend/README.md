@@ -23,5 +23,5 @@ To get the backend server up and running, follow these steps:
 4. **Run the development server:**
 
     ```bash
-    fastapi dev main.py
+    fastapi dev app/main.py
     ```

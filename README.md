@@ -7,6 +7,12 @@ This project consists of two main parts:
 
 ## Getting Started
 
+Clone this repo:
+
+    ```bash
+    gh repo clone plumsily/artisan-chatbot
+    ```
+
 ### Backend (FastAPI)
 
 To get the backend (FastAPI) up and running, follow these steps:
@@ -38,7 +44,7 @@ To get the backend (FastAPI) up and running, follow these steps:
 5. **Run the development server:**
 
     ```bash
-    fastapi dev main.py
+    fastapi dev app/main.py
     ```
 
 ### Frontend (Next.js)

@@ -63,7 +63,7 @@ const ChatMessage = ({
         }`}
       >
         {isEditing ? (
-          <div className="flex flex-col gap-1 w-full">
+          <div className="flex flex-col gap-1 w-full text-black">
             <span className="text-xs">Edit message:</span>
             <ChatInput
               message={message}

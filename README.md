@@ -38,10 +38,13 @@ To get the backend (FastAPI) up and running, follow these steps:
     ```
 
 4. **Install the required dependencies:**
+Before running the pip install command, ensure that you are using the correct Python interpreter from the .venv. If you’re using an IDE like VSCode, you can select the right interpreter by navigating to the .venv in the backend/ directory. The interpreter path should be ./backend/.venv/bin/python.
 
     ```bash
     pip install -r requirements.txt
     ```
+
+    Note: installation make take a few moments.
 
 5. **Run the development server:**
 
@@ -70,6 +73,8 @@ To get the frontend (Next.js) up and running, follow these steps:
     ```bash
     npm run dev
     ```
+
+    Note: Next.js may take a few moments to compile.
 
 4. Open your browser and navigate to `http://localhost:3000` to view the Next.js app.
 
